@@ -21,6 +21,24 @@ CREATE TABLE `empleados` (
   `id_departamento` int(11)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish2_ci;
 
+CREATE TABLE `usuarios` (
+  `id_usuario` int(11) NOT NULL,
+  `usuario` varchar(20) COLLATE utf8mb4_spanish2_ci NOT NULL,
+  `password` varchar(20) COLLATE utf8mb4_spanish2_ci NOT NULL,
+  `tipo` varchar(10) DEFAULT NULL
+); 
+
+CREATE TABLE `grupos` (
+  `id_grupo` int(11) NOT NULL,
+  `grupo` varchar(20) COLLATE utf8mb4_spanish2_ci NOT NULL,
+  `id_empresa` int(11) 
+); 
+
+CREATE TABLE `grupos_usuarios` (
+  `id_gr_us` int(11) NOT NULL,
+  `id_grupo` int(11),
+  `id_usuario` int(11) 
+); 
 
 -- Indices
 ALTER TABLE `empresas`
@@ -34,16 +52,17 @@ ALTER TABLE `empleados`
 MODIFY `id_empleado` int(11) NOT NULL AUTO_INCREMENT,
 ADD PRIMARY KEY (`id_empleado`),
 ADD KEY `id_departamento` (`id_departamento`);
+ALTER TABLE `usuarios`
+MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT,
+ADD PRIMARY KEY (`id_usuario`);
+ALTER TABLE `grupos`
+MODIFY `id_grupo` int(11) NOT NULL AUTO_INCREMENT,
+ADD PRIMARY KEY (`id_grupo`);
 
 -- Foreign key
 ALTER TABLE `departamentos`
 ADD CONSTRAINT `departamentos_empresas` FOREIGN KEY (`id_empresa`) REFERENCES `empresas` (`id_empresa`) ON DELETE CASCADE;
 ALTER TABLE `empleados`
 ADD CONSTRAINT `empleados_departamentos` FOREIGN KEY (`id_departamento`) REFERENCES `departamentos` (`id_departamento`) ON DELETE CASCADE;
-
-
---borrar
-SELECT * FROM empleados e
-INNER JOIN departamentos d ON d.id_departamento=e.id_departamento
-INNER JOIN empresas em ON em.id_empresa=d.id_empresa
-WHERE em.id_empresa = 1;
+ALTER TABLE `grupos`
+ADD CONSTRAINT `grupos_empresas` FOREIGN KEY (`id_empresa`) REFERENCES `empresas` (`id_empresa`) ON DELETE CASCADE;

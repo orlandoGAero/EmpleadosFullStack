@@ -1,15 +1,14 @@
-import { Fragment, useState } from 'react';
-import { Link } from 'react-router-dom';
+import {Fragment, useState } from 'react';
+import Error from '../components/Error';
 import clientesAxios from '../config/axios';
-import Empleados from "./Empleados";
 
 
-const BuscarEmpleados = () => {
+const BuscarEmpleados = ({setEmpleados}) => {
 
     const [criterio, setCriterio] = useState('');
     const [busqueda, setBusqueda] = useState('');
-    const [empleados, setEmpleados] = useState([]);
-    
+    const [error, setError] = useState(false);
+
     const cambiarBusqueda = e => {
         setBusqueda(e.target.value);
         setCriterio('');
@@ -38,23 +37,29 @@ const BuscarEmpleados = () => {
                 break;
         }
 
+        if(busqueda == "" || criterio == "") {
+            setError(true);
+            return;
+        }
+
+        setError(false);
+
         clientesAxios.get(url)
             .then(respuesta => {
                 setEmpleados(respuesta.data);
             })   
     }
-    
 
     return ( 
         <Fragment>
-            <div className="row  py-5 px-5">
+            <div className="row py-5 px-5">
                 <div className="col-auto">
-                    <label class="h1">Buscar Por:</label>
+                    <label class="h3">Buscar Por:</label>
                 </div>
                 <div className="col-md-4">
                     <select 
-                        class="form-select form-select-lg mb-3" 
-                        aria-label=".form-select-lg example"
+                        class="form-select form-select mb-3" 
+                        aria-label=".form-select"
                         name="buscar"
                         onChange={cambiarBusqueda}
                     >
@@ -69,8 +74,8 @@ const BuscarEmpleados = () => {
                         (busqueda == 'empresa') 
                         ?
                             <select 
-                                class="form-select form-select-lg mb-3" 
-                                aria-label=".form-select-lg example"
+                                class="form-select form-select mb-3" 
+                                aria-label=".form-select"
                                 name="empresa"
                                 onChange={cambiarCriterio}
                             >
@@ -84,8 +89,8 @@ const BuscarEmpleados = () => {
                         (busqueda == 'departamento')
                         ?
                             <select 
-                                class="form-select form-select-lg mb-3" 
-                                aria-label=".form-select-lg example"
+                                class="form-select form-select mb-3" 
+                                aria-label=".form-select"
                                 name="departamento"
                                 onChange={cambiarCriterio}
                             >
@@ -96,7 +101,7 @@ const BuscarEmpleados = () => {
                         :
                             <input 
                                 type="text" 
-                                className="form-control-lg" 
+                                className="form-control" 
                                 name="nombre"
                                 onChange={cambiarCriterio}
                             />
@@ -105,21 +110,14 @@ const BuscarEmpleados = () => {
                 <div className="col-auto">
                     <button 
                         type="button" 
-                        className="btn btn-lg btn-primary"
+                        className="btn btn btn-primary"
                         onClick={buscarEmpleados}
                     >
                         Buscar
                     </button>
                 </div>
+            {error ? <Error mensaje="Ingresa todos los criterios"/> : null}
             </div>  
-            <div className="row py-5">
-                <div className="col-12 mb-5 d-flex justify-content-center">
-                    <Link to={'/nueva'} className="btn btn-success text-uppercase py-2 px-5 font-weight-bold">
-                        Registrar Empleado
-                    </Link>
-                </div>
-            </div>
-            <Empleados empleados={empleados} />
         </Fragment>
      );
 }

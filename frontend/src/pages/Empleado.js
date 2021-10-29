@@ -36,16 +36,14 @@ const Empleado = ({ empleado }) => {
       <td>{telefono}</td>
       <td>
         <Link
-          to={`/editar/${id_empleado}`}
-          className="text-uppercase py-2 px-5 mb-md-3 btn font-weight-bold btn-info col"
+          to={`/empleados/editar/${id_empleado}`}
+          className="text-uppercase font-weight-bold me-md-3 text-white btn btn-info"
         >
           Editar
         </Link>
-      </td>
-      <td>
         <button
           type="button"
-          className="text-uppercase py-2 px-5 font-weight-bold btn btn-danger col"
+          className="text-uppercase font-weight-bold btn btn-danger"
           onClick={() => eliminarEmpleado(id_empleado)}
         >
           Eliminar &times;

@@ -1,31 +1,45 @@
-import Empleado from "./Empleado";
+import { Fragment, useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
+import Cookies from 'universal-cookie';
+import Menu from "../components/Menu";
+import BuscarEmpleados from "./BuscarEmpleados";
+import ListaEmpleados from "./ListaEmpleados";
+import clientesAxios from "../config/axios";
 
-const Empleados = ({empleados}) => {
-    if(empleados.length == 0) return null;
-    
+const cookies = new Cookies();
+
+const Empleados = () => {
+
+    const [empleados, setEmpleados] = useState([]);
+
+    useEffect(() => {
+        if(!cookies.get("usuario")) {
+            window.location.href = "./";
+        }
+        const url = '/empleados';
+
+        clientesAxios.get(url)
+        .then(respuesta => {
+            setEmpleados(respuesta.data);
+        }) 
+    }, [cookies]);
+
     return (
-        <div className="py-5">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Correo</th>
-                        <th scope="col">Fecha Nacimiento</th>
-                        <th scope="col">Telefono</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        empleados.map(empleado => (
-                            <Empleado
-                                key={empleado.id_empleado}
-                                empleado={empleado}
-                            />                    
-                        ))
-                    }
-                </tbody>
-            </table>
-        </div>
+        <Fragment>
+
+            <Menu/> 
+
+            <div className="container-fluid my-5 d-flex justify-content-end">
+                <Link to={'/empleados/crear'} className="btn btn-success text-uppercase py-2 px-5 font-weight-bold">
+                    Registrar Empleado
+                </Link>
+            </div>
+
+            <BuscarEmpleados setEmpleados={setEmpleados}/>
+
+            <ListaEmpleados empleados={empleados} />
+
+        </Fragment>
     );
 }
  
